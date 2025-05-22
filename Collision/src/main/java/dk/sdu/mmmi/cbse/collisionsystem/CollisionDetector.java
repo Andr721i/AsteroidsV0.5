@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class CollisionDetector implements IPostEntityProcessingService {
 
     private final IAsteroidSplitter asteroidSplitter;
-    private GameData gameData;  // Store for scoring
+    private GameData gameData;
 
     public CollisionDetector() {
         ServiceLoader<IAsteroidSplitter> loader = ServiceLoader.load(IAsteroidSplitter.class);
@@ -31,7 +31,7 @@ public class CollisionDetector implements IPostEntityProcessingService {
     public void process(GameData gameData, World world) {
         if (asteroidSplitter == null) return;
 
-        this.gameData = gameData; // store gameData to update score
+        this.gameData = gameData;
 
         List<Entity> bulletsToRemove = new ArrayList<>();
         List<Entity> asteroidsToRemove = new ArrayList<>();
@@ -54,7 +54,7 @@ public class CollisionDetector implements IPostEntityProcessingService {
                 .map(p -> (Player) p)
                 .collect(Collectors.toList());
 
-        // 1. Bullet-Asteroid collisions
+
         for (Bullet bullet : bullets) {
             for (Asteroid asteroid : asteroids) {
                 if (collides(bullet, asteroid)) {
@@ -62,39 +62,38 @@ public class CollisionDetector implements IPostEntityProcessingService {
                     asteroidsToRemove.add(asteroid);
                     asteroidSplitter.createSplitAsteroid(asteroid, world);
 
-                    // Add points for asteroid destroyed
+
                     gameData.getScore().addPoints(100);
                 }
             }
         }
 
-        // 2 & 3. Bullet-Enemy and Bullet-Player collisions
+
         processBulletHitsEntities(bullets, enemies, bulletsToRemove, enemiesToRemove);
         processBulletHitsEntities(bullets, players, bulletsToRemove, playersToRemove);
 
-        // 4. Enemy-Asteroid collisions (enemy destroyed on collision)
         for (Enemy enemy : enemies) {
             for (Asteroid asteroid : asteroids) {
                 if (collides(enemy, asteroid)) {
                     enemiesToRemove.add(enemy);
-                    gameData.getScore().addPoints(200); // enemy destroyed
+                    gameData.getScore().addPoints(200);
                 }
             }
         }
 
-        // 5. Player-Asteroid collisions (player destroyed + game over)
+
         for (Player player : players) {
             for (Asteroid asteroid : asteroids) {
                 if (collides(player, asteroid)) {
                     playersToRemove.add(player);
                     GameState.setGameOver(true);
 
-                    gameData.getScore().reset(); // reset score on player death
+                    gameData.getScore().reset();
                 }
             }
         }
 
-        // Remove all marked entities
+
         bulletsToRemove.forEach(world::removeEntity);
         asteroidsToRemove.forEach(world::removeEntity);
         enemiesToRemove.forEach(world::removeEntity);
@@ -116,9 +115,9 @@ public class CollisionDetector implements IPostEntityProcessingService {
                         entitiesToRemove.add(entity);
                         if (entity instanceof Player) {
                             GameState.setGameOver(true);
-                            gameData.getScore().reset(); // reset score on player death
+                            gameData.getScore().reset();
                         } else if (entity instanceof Enemy) {
-                            gameData.getScore().addPoints(200); // enemy destroyed
+                            gameData.getScore().addPoints(200);
                         }
                     }
                 }
@@ -126,9 +125,6 @@ public class CollisionDetector implements IPostEntityProcessingService {
         }
     }
 
-    /**
-     * Simple circle collision detection
-     */
     public boolean collides(Entity e1, Entity e2) {
         float dx = (float) (e1.getX() - e2.getX());
         float dy = (float) (e1.getY() - e2.getY());

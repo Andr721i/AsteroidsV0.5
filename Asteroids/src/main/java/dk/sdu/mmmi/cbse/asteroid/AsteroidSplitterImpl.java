@@ -15,7 +15,7 @@ public class AsteroidSplitterImpl implements IAsteroidSplitter {
     public void createSplitAsteroid(Entity e, World world) {
         float currentRadius = e.getRadius();
 
-        // Only split if asteroid is big enough
+
         if (currentRadius < 5) return;
 
         int numNewAsteroids = 2 + r.nextInt(2); // 2 or 3
@@ -28,7 +28,7 @@ public class AsteroidSplitterImpl implements IAsteroidSplitter {
             smallAsteroid.setY(e.getY());
             smallAsteroid.setRotation(r.nextInt(360));
 
-            // Set new shape (simplified)
+
             smallAsteroid.setPolygonCoordinates(
                     newRadius, 0,
                     newRadius / 2f, -newRadius * 1.2f,

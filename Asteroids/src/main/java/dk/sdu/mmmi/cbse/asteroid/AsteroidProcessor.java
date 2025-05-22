@@ -13,12 +13,12 @@ public class AsteroidProcessor implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-        float screenW = (float) gameData.getDisplayWidth();  // screen width
-        float screenH = (float) gameData.getDisplayHeight(); // screen height
+        float screenW = (float) gameData.getDisplayWidth();
+        float screenH = (float) gameData.getDisplayHeight();
 
         for (Entity ent : world.getEntities(Asteroid.class)) {
-            float angle = (float) ent.getRotation();    // current rotation
-            float speed = 0.5f;                 // asteroid speed
+            float angle = (float) ent.getRotation();
+            float speed = 0.5f;
 
             float dx = (float) (Math.cos(Math.toRadians(angle)) * speed);
             float dy = (float) (Math.sin(Math.toRadians(angle)) * speed);
@@ -30,25 +30,24 @@ public class AsteroidProcessor implements IEntityProcessingService {
             ent.setY(newY);
 
             if (newX < 0f) {
-                ent.setX(newX + screenW); // wrap left
+                ent.setX(newX + screenW);
             } else if (newX > screenW) {
-                ent.setX(newX % screenW); // wrap right
+                ent.setX(newX % screenW);
             }
 
             if (newY < 0f) {
-                ent.setY(newY + screenH); // wrap top
+                ent.setY(newY + screenH);
             } else if (newY > screenH) {
-                ent.setY(newY % screenH); // wrap bottom
+                ent.setY(newY % screenH);
             }
         }
     }
 
     public void setAsteroidSplitter(IAsteroidSplitter asteroidSplitter) {
-        this.asteroidSplitter = asteroidSplitter; // assign splitter
+        this.asteroidSplitter = asteroidSplitter;
     }
 
     public void removeAsteroidSplitter(IAsteroidSplitter asteroidSplitter) {
-        this.asteroidSplitter = null; // clear reference
+        this.asteroidSplitter = null;
     }
-
 }

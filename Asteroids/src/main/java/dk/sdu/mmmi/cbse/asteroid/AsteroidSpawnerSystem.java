@@ -11,7 +11,7 @@ import java.util.Random;
 public class AsteroidSpawnerSystem implements IEntityProcessingService {
 
     private float timeSinceLastSpawn = 0;
-    private final float spawnInterval = 4f; // every 4 seconds
+    private final float spawnInterval = 4f;
     private final Random r = new Random();
 
     @Override
@@ -44,7 +44,7 @@ public class AsteroidSpawnerSystem implements IEntityProcessingService {
         a.setX(r.nextFloat() * gd.getDisplayWidth());
         a.setY(r.nextFloat() * gd.getDisplayHeight());
         a.setRadius(s);
-        a.setRotation(r.nextInt(360)); // random rotation
+        a.setRotation(r.nextInt(360));
         return a;
 
     }

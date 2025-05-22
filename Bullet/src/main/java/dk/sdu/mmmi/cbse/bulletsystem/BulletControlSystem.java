@@ -23,7 +23,6 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
         while (bulletIterator.hasNext()) {
             Entity bullet = bulletIterator.next();
 
-            // Move bullet forward
             double dx = Math.cos(Math.toRadians(bullet.getRotation()));
             double dy = Math.sin(Math.toRadians(bullet.getRotation()));
             bullet.setX(bullet.getX() + dx * 3);
