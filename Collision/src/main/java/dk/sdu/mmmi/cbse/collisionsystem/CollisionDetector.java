@@ -12,7 +12,6 @@ import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.playersystem.Player;
 import dk.sdu.mmmi.cbse.common.data.Damageable;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 public class CollisionDetector implements IPostEntityProcessingService {
 
     private final IAsteroidSplitter asteroidSplitter;
+    private GameData gameData;  // Store for scoring
 
     public CollisionDetector() {
         ServiceLoader<IAsteroidSplitter> loader = ServiceLoader.load(IAsteroidSplitter.class);
@@ -31,13 +31,13 @@ public class CollisionDetector implements IPostEntityProcessingService {
     public void process(GameData gameData, World world) {
         if (asteroidSplitter == null) return;
 
+        this.gameData = gameData; // store gameData to update score
+
         List<Entity> bulletsToRemove = new ArrayList<>();
         List<Entity> asteroidsToRemove = new ArrayList<>();
         List<Entity> enemiesToRemove = new ArrayList<>();
         List<Entity> playersToRemove = new ArrayList<>();
 
-
-// Cast from Entity to specific classes
         List<Bullet> bullets = world.getEntities(Bullet.class).stream()
                 .map(b -> (Bullet) b)
                 .collect(Collectors.toList());
@@ -54,7 +54,6 @@ public class CollisionDetector implements IPostEntityProcessingService {
                 .map(p -> (Player) p)
                 .collect(Collectors.toList());
 
-
         // 1. Bullet-Asteroid collisions
         for (Bullet bullet : bullets) {
             for (Asteroid asteroid : asteroids) {
@@ -62,11 +61,14 @@ public class CollisionDetector implements IPostEntityProcessingService {
                     bulletsToRemove.add(bullet);
                     asteroidsToRemove.add(asteroid);
                     asteroidSplitter.createSplitAsteroid(asteroid, world);
+
+                    // Add points for asteroid destroyed
+                    gameData.getScore().addPoints(100);
                 }
             }
         }
 
-
+        // 2 & 3. Bullet-Enemy and Bullet-Player collisions
         processBulletHitsEntities(bullets, enemies, bulletsToRemove, enemiesToRemove);
         processBulletHitsEntities(bullets, players, bulletsToRemove, playersToRemove);
 
@@ -75,6 +77,7 @@ public class CollisionDetector implements IPostEntityProcessingService {
             for (Asteroid asteroid : asteroids) {
                 if (collides(enemy, asteroid)) {
                     enemiesToRemove.add(enemy);
+                    gameData.getScore().addPoints(200); // enemy destroyed
                 }
             }
         }
@@ -85,6 +88,8 @@ public class CollisionDetector implements IPostEntityProcessingService {
                 if (collides(player, asteroid)) {
                     playersToRemove.add(player);
                     GameState.setGameOver(true);
+
+                    gameData.getScore().reset(); // reset score on player death
                 }
             }
         }
@@ -96,11 +101,6 @@ public class CollisionDetector implements IPostEntityProcessingService {
         playersToRemove.forEach(world::removeEntity);
     }
 
-    /**
-     * Helper method to process bullet collisions with entities (enemies or players).
-     * Bullets and entities that are hit are added to removal lists.
-     * Entities are damaged, and removed if dead.
-     */
     private <T extends Entity & Damageable> void processBulletHitsEntities(
             List<Bullet> bullets,
             List<T> entities,
@@ -116,6 +116,9 @@ public class CollisionDetector implements IPostEntityProcessingService {
                         entitiesToRemove.add(entity);
                         if (entity instanceof Player) {
                             GameState.setGameOver(true);
+                            gameData.getScore().reset(); // reset score on player death
+                        } else if (entity instanceof Enemy) {
+                            gameData.getScore().addPoints(200); // enemy destroyed
                         }
                     }
                 }
@@ -133,6 +136,4 @@ public class CollisionDetector implements IPostEntityProcessingService {
         float radiusSum = e1.getRadius() + e2.getRadius();
         return distSq <= radiusSum * radiusSum;
     }
-
-
 }

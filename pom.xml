@@ -27,6 +27,7 @@
         <module>Collision</module>
         <module>Enemy</module>
         <module>CommonEnemy</module>
+        <module>ScoringSystem</module>
 
     </modules>
 

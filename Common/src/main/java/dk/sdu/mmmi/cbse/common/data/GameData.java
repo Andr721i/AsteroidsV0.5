@@ -16,6 +16,11 @@ public class GameData {
 
 
     }
+    private Score score = new Score();
+
+    public Score getScore() {
+        return score;
+    }
 
 
     public GameKeys getKeys() {
