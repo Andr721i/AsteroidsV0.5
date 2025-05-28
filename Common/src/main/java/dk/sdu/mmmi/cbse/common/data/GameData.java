@@ -1,5 +1,8 @@
 package dk.sdu.mmmi.cbse.common.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameData {
 
     private int displayWidth  = 800 ;
@@ -43,5 +46,18 @@ public class GameData {
         return displayHeight;
     }
 
+    private List<String> scoreEvents = new ArrayList<>();
+
+    public void addScoreEvent(String event) {
+        scoreEvents.add(event);
+    }
+
+    public List<String> getScoreEvents() {
+        return scoreEvents;
+    }
+
+    public void clearScoreEvents() {
+        scoreEvents.clear();
+    }
 
 }

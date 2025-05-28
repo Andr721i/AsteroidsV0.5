@@ -62,12 +62,10 @@ public class CollisionDetector implements IPostEntityProcessingService {
                     asteroidsToRemove.add(asteroid);
                     asteroidSplitter.createSplitAsteroid(asteroid, world);
 
-
-                    gameData.getScore().addPoints(100);
+                    gameData.addScoreEvent("ASTEROID_DESTROYED");
                 }
             }
         }
-
 
         processBulletHitsEntities(bullets, enemies, bulletsToRemove, enemiesToRemove);
         processBulletHitsEntities(bullets, players, bulletsToRemove, playersToRemove);
@@ -76,11 +74,10 @@ public class CollisionDetector implements IPostEntityProcessingService {
             for (Asteroid asteroid : asteroids) {
                 if (collides(enemy, asteroid)) {
                     enemiesToRemove.add(enemy);
-                    gameData.getScore().addPoints(200);
+                    gameData.addScoreEvent("ENEMY_DESTROYED");
                 }
             }
         }
-
 
         for (Player player : players) {
             for (Asteroid asteroid : asteroids) {
@@ -88,11 +85,10 @@ public class CollisionDetector implements IPostEntityProcessingService {
                     playersToRemove.add(player);
                     GameState.setGameOver(true);
 
-                    gameData.getScore().reset();
+                    gameData.addScoreEvent("RESET_SCORE");
                 }
             }
         }
-
 
         bulletsToRemove.forEach(world::removeEntity);
         asteroidsToRemove.forEach(world::removeEntity);
@@ -115,9 +111,9 @@ public class CollisionDetector implements IPostEntityProcessingService {
                         entitiesToRemove.add(entity);
                         if (entity instanceof Player) {
                             GameState.setGameOver(true);
-                            gameData.getScore().reset();
+                            gameData.addScoreEvent("RESET_SCORE");
                         } else if (entity instanceof Enemy) {
-                            gameData.getScore().addPoints(200);
+                            gameData.addScoreEvent("ENEMY_DESTROYED");
                         }
                     }
                 }
