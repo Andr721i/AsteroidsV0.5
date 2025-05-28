@@ -11,19 +11,17 @@ import java.util.stream.Collectors;
 
 public enum ServiceLocator {
 
-    INSTANCE;
+    ;
 
     private static final Map<Class, ServiceLoader> loadermap = new HashMap<>();
     private final ModuleLayer layer;
 
     ServiceLocator() {
         try {
-            Path pluginsDir = Paths.get("plugins"); // Directory with plugins JARs
+            Path pluginsDir = Paths.get("plugins");
 
-            // Search for plugins in the plugins directory
             ModuleFinder pluginsFinder = ModuleFinder.of(pluginsDir);
 
-            // Find all names of all found plugin modules
             List<String> plugins = pluginsFinder
                     .findAll()
                     .stream()
@@ -31,14 +29,13 @@ public enum ServiceLocator {
                     .map(ModuleDescriptor::name)
                     .collect(Collectors.toList());
 
-            // Create configuration that will resolve plugin modules
-            // (verify that the graph of modules is correct)
+
             Configuration pluginsConfiguration = ModuleLayer
                     .boot()
                     .configuration()
                     .resolve(pluginsFinder, ModuleFinder.of(), plugins);
 
-            // Create a module layer for plugins
+
             layer = ModuleLayer
                     .boot()
                     .defineModulesWithOneLoader(pluginsConfiguration, ClassLoader.getSystemClassLoader());
