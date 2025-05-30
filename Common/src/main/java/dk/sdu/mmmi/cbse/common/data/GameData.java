@@ -29,6 +29,9 @@ public class GameData {
     public GameKeys getKeys() {
         return keys;
     }
+    public GameKeys setKeys(GameKeys gameKeys) {
+        return keys;
+    }
 
     public void setDisplayWidth(int width) {
         this.displayWidth = width;
