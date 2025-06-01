@@ -19,20 +19,19 @@ public class PlayerControlSystemIntegrationTest {
     public void setup() {
         playerControlSystem = new PlayerControlSystem();
 
-        // Create real (simple) implementations
         gameData = new GameData();
         world = new World();
         player = new Player();
 
-        // Initial player state
+
         player.setX(100);
         player.setY(100);
-        player.setRotation(0); // Facing right (0°)
+        player.setRotation(0);
 
-        // Add to world
+
         world.addEntity(player);
 
-        // Set GameData keys and display size
+
         gameData.setDelta(0.1f);
         gameData.setDisplayWidth(800);
         gameData.setDisplayHeight(600);
@@ -41,13 +40,13 @@ public class PlayerControlSystemIntegrationTest {
 
     @Test
     public void testPlayerMovesForwardWhenUpKeyIsPressed() {
-        // Simulate key press
+
         gameData.getKeys().setKey(GameKeys.UP, true);
 
         float xBefore = (float) player.getX();
         float yBefore = (float) player.getY();
 
-        // Process the system
+
         playerControlSystem.process(gameData, world);
 
         float xAfter = (float) player.getX();

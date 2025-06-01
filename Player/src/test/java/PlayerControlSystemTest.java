@@ -29,12 +29,12 @@ public class PlayerControlSystemTest {
         keys = mock(GameKeys.class);
 
         when(gameData.getKeys()).thenReturn(keys);
-        when(gameData.getDelta()).thenReturn(0.1f); // delta isn't used in this system
+        when(gameData.getDelta()).thenReturn(0.1f);
 
         player = new Player();
         player.setX(100);
         player.setY(100);
-        player.setRotation(0); // Facing right
+        player.setRotation(0);
 
         when(world.getEntities(Player.class)).thenReturn(Collections.singletonList(player));
     }
@@ -53,7 +53,7 @@ public class PlayerControlSystemTest {
 
         boolean hasMoved = (initialX != newX) || (initialY != newY);
 
-        // Just check that the player moved
+
         assertNotEquals(false, hasMoved, "Player should move when UP key is pressed");
     }
 }
